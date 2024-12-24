@@ -72,7 +72,7 @@ const login = async (req, res) => {
     res.status(200).json({
       isSuccess: true,
       message: 'Login successful',
-      data: { token ,user},
+      token , ...user._doc,
     });
   } catch (error) {
     console.error('Error during login:', error);
