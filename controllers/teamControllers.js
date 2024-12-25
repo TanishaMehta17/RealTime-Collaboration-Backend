@@ -5,7 +5,7 @@ const prisma = require("../config/db");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const createTeam = async (req, res) => {
-  const { managerid, name, password } = req.body;
+  const { manager, name, password } = req.body;
   console.log(req.body);
   try {
     // Check if team already exists
@@ -19,8 +19,8 @@ const createTeam = async (req, res) => {
 
     const newTeam = await prisma.team.create({
       data: {
-        name: req.body.name,
-        manager: req.body.managerid,
+        name: name,
+        manager: manager,
         password: hashedPassword,
       },
     });

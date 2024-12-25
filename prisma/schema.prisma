@@ -29,7 +29,7 @@ model Team {
   name     String  @unique
   password String
   manager  String
-  members  String[]
+  members  String[] @unique
 }
 
 model Task {
