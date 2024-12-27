@@ -5,7 +5,7 @@ const prisma = require("../config/db");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const createTask = async (req, res) => {
-  const { title, description, status, type, membersName } = req.body;
+  const { title, description, status, type, membersName, teamId } = req.body;
   console.log(req.body);
   try {
     // Check if task already exists
@@ -23,6 +23,7 @@ const createTask = async (req, res) => {
         status: status,
         type: type,
         membersName: membersName,
+        teamId:teamId,
       },
     });
 
@@ -34,6 +35,25 @@ const createTask = async (req, res) => {
       .status(500)
       .json({ isSuccess: false, message: "Error creating task", error });
   }
+};
+
+const getTask = async (req, res) => {
+  
+  const { teamId } = req.body;
+  if (!teamId) {
+    return res.status(400).json({ message: "Team Id is required" });
+  }
+  const tasks = await prisma.task.findMany({
+    where: {
+      teamId: teamId,
+    },
+  });
+
+  if (tasks.length === 0) {
+    return res.status(404).json({ message: "No tasks found for the given team Id" });
+  }
+
+  res.json(tasks);
 };
 
 module.exports = { createTask };
