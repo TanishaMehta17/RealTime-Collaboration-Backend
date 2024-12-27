@@ -27,14 +27,22 @@ const createTeam = async (req, res) => {
 
     res
       .status(200)
-      .json({ isSuccess: true, message: "Team created successfully" });
+      .json({ isSuccess: true, message: "Team created successfully",
+      id: newTeam.id,
+      name: newTeam.name,
+      manager: newTeam.manager,
+      password: newTeam.password,
+      members: newTeam.members
+       });
   } catch (error) {
     res
       .status(500)
       .json({ isSuccess: false, message: "Error creating team", error });
   }
 };
-
+function ensureUniqueMembers(members) {
+  return [...new Set(members)];
+}
 const joinTeam = async (req, res) => {
   const { password } = req.body;
   console.log(req.body);
@@ -61,18 +69,26 @@ const joinTeam = async (req, res) => {
     const userId = decoded.userId;
     console.log(userId);
 
+    // Ensure userId is unique in members
+    const updatedMembers = ensureUniqueMembers([...existingTeam.members, userId]);
+
     await prisma.team.update({
         where: { id: existingTeam.id },
         data: {
-            members: {
-                push: userId
-            },
+            members: updatedMembers,
         },
     });
 
     res
       .status(200)
-      .json({ isSuccess: true, message: "Team joined successfully" });
+      .json({ isSuccess: true, message: "Team joined successfully",
+      id: existingTeam.id,
+      name: existingTeam.name,
+      manager: existingTeam.manager,
+      password: existingTeam.password,
+      members: updatedMembers
+
+       });
   } catch (error) {
     res
       .status(500)

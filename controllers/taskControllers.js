@@ -18,11 +18,11 @@ const createTask = async (req, res) => {
 
     const newTask = await prisma.task.create({
       data: {
-        title: req.body.title,
-        description: req.body.description,
-        status: req.body.status,
-        type: req.body.type,
-        membersName: req.body.membersName,
+        title: title,
+        description: description,
+        status: status,
+        type: type,
+        membersName: membersName,
       },
     });
 
