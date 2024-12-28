@@ -9,36 +9,36 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  directUrl     = env("DIRECT_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  directUrl    = env("DIRECT_URL")
   relationMode = "prisma"
 }
 
 model User {
-  id         String  @id @default(cuid())
+  id         String @id @default(cuid())
   username   String
-  email      String  @unique
+  email      String @unique
   password   String
   confirmpas String
-
 }
 
 model Team {
-  id       String  @id @default(cuid())
-  name     String  @unique
+  id       String   @id @default(cuid())
+  name     String   @unique
   password String
   manager  String
   members  String[] @unique
 }
 
 model Task {
-  id          String  @id @default(cuid())
-  title       String
-  description String
-  type        String[]
-  status      String
-  teamId      String
-  date       DateTime @default(now())
-  membersName     String[]
+  id           String   @id @default(cuid())
+  title        String
+  description  String
+  description1 String
+  type         String
+  status       String
+  teamId       String
+  date         DateTime @default(now())
+  membersName  String[]
 }

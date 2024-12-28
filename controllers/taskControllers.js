@@ -5,10 +5,9 @@ const prisma = require("../config/db");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const createTask = async (req, res) => {
-  const { title, description, status, type, membersName, teamId } = req.body;
+  const { title, description1, description, status, type, membersName, teamId } = req.body;
   console.log(req.body);
   try {
-    // Check if task already exists
     const existingTask = await prisma.task.findUnique({
       where: { title: req.body.title, description: req.body.description },
     });
@@ -19,23 +18,30 @@ const createTask = async (req, res) => {
     const newTask = await prisma.task.create({
       data: {
         title: title,
+        description1: description1,
         description: description,
         status: status,
         type: type,
         membersName: membersName,
-        teamId:teamId,
+        teamId: teamId,
       },
     });
-
-    res
-      .status(200)
-      .json({ isSuccess: true, message: "Task created successfully" });
+    const updatedTasks = await prisma.task.findMany();
+    res.status(200).json({
+      isSuccess: true,
+      message: "Task created successfully",
+      task: newTask,
+      tasks: updatedTasks,
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ isSuccess: false, message: "Error creating task", error });
+    res.status(500).json({
+      isSuccess: false,
+      message: "Error creating task",
+      error,
+    });
   }
 };
+
 
 const getTask = async (req, res) => {
   
@@ -56,4 +62,4 @@ const getTask = async (req, res) => {
   res.json(tasks);
 };
 
-module.exports = { createTask };
+module.exports = { createTask , getTask };
