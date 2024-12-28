@@ -39,6 +39,6 @@ model Task {
   type         String
   status       String
   teamId       String
-  date         DateTime @default(now())
+  date         String
   membersName  String[]
 }

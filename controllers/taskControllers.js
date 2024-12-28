@@ -5,7 +5,7 @@ const prisma = require("../config/db");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const createTask = async (req, res) => {
-  const { title, description1, description, status, type, membersName, teamId } = req.body;
+  const { title, description1, description, status, type, membersName, teamId ,date} = req.body;
   console.log(req.body);
   try {
     const existingTask = await prisma.task.findUnique({
@@ -24,6 +24,7 @@ const createTask = async (req, res) => {
         type: type,
         membersName: membersName,
         teamId: teamId,
+        date:date
       },
     });
     const updatedTasks = await prisma.task.findMany();
