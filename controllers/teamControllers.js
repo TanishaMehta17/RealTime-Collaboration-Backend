@@ -72,6 +72,8 @@ const joinTeam = async (req, res) => {
     // Ensure userId is unique in members
     const updatedMembers = ensureUniqueMembers([...existingTeam.members, userId]);
 
+
+
     await prisma.team.update({
         where: { id: existingTeam.id },
         data: {

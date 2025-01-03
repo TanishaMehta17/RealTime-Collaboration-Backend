@@ -12,7 +12,6 @@ datasource db {
   provider     = "postgresql"
   url          = env("DATABASE_URL")
   directUrl    = env("DIRECT_URL")
-  relationMode = "prisma"
 }
 
 model User {
@@ -29,6 +28,7 @@ model Team {
   password String
   manager  String
   members  String[] @unique
+  tasks    Task[]  @relation("TaskToTeam")
 }
 
 model Task {
@@ -41,4 +41,5 @@ model Task {
   teamId       String
   date         String
   membersName  String[]
+  team         Team     @relation("TaskToTeam", fields: [teamId], references: [id])
 }
