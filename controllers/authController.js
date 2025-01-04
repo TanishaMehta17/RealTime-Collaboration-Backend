@@ -70,6 +70,7 @@ const login = async (req, res) => {
     // var temp=JSON.stringify({user,
     //   token: token})
     // Send the token and success response
+    console.log(token);
     res.status(200).json({
       
       // message: 'Login successful',
