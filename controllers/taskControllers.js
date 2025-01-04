@@ -5,7 +5,7 @@ const prisma = require("../config/db");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const createTask = async (req, res) => {
-  const { heading1, bodyText1, bodyText2, category, heading2, membersName, teamId , date} = req.body;
+  const { title, description, description1, status, date, membersName, teamId , type} = req.body;
   console.log(req.body);
   try {
     // const existingTask = await prisma.task.findUnique({
@@ -27,27 +27,28 @@ const createTask = async (req, res) => {
 
     const newTask = await prisma.task.create({
       data: {
-        title: heading1 ,
-        description1: bodyText1 ,
-        description: bodyText2,
-        status: category,
-        type: heading2,
+        title: title ,
+        description1: description1 ,
+        description: description,
+        status: status,
+        type: type,
         membersName: membersName,
         teamId: teamId ,
         date: date ,
       },
     });
+    
     const updatedTasks = await prisma.task.findMany();
     res.status(200).json({
       isSuccess: true,
       message: "Task created successfully",
       task: newTask,
       id : newTask.id,
-      heading1 : newTask.title,
-      bodyText1 : newTask.description1,
-      bodyText2 : newTask.description,
-      category : newTask.status,
-      heading2 : newTask.type,
+      title : newTask.title,
+      description1 : newTask.description1,
+      description : newTask.description,
+      status : newTask.status,
+      type : newTask.type,
       membersName : newTask.membersName,
       teamId : newTask.teamId,
       date : newTask.date,

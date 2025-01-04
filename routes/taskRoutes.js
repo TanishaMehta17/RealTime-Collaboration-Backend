@@ -5,7 +5,7 @@ const { createTask  ,getTask} = require('../controllers/taskControllers');
 const { authMiddleware } = require("../middleware/authMiddleware");
 
 router.post('/create', authMiddleware, createTask);
-router.get('/getTask', authMiddleware, getTask);
+router.post('/getTask', authMiddleware, getTask);
 
 
 
