@@ -37,7 +37,7 @@ const createTask = async (req, res) => {
         date: date ,
       },
     });
-    
+
     const updatedTasks = await prisma.task.findMany();
     res.status(200).json({
       isSuccess: true,
@@ -80,8 +80,12 @@ const getTask = async (req, res) => {
   if (tasks.length === 0) {
     return res.status(404).json({ message: "No tasks found for the given team Id" });
   }
+  res.status(200).json({
+    isSuccess: true,
+    message: "Task created successfully",
+    tasks: tasks,
+});
 
-  res.json(tasks);
 };
 
 module.exports = { createTask , getTask };
