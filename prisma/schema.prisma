@@ -32,7 +32,7 @@ model Team {
 }
 
 model Task {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   title        String
   description  String
   description1 String
@@ -41,5 +41,15 @@ model Task {
   teamId       String
   date         String
   membersName  String[]
-  team         Team     @relation("TaskToTeam", fields: [teamId], references: [id])
+  team         Team      @relation("TaskToTeam", fields: [teamId], references: [id])
+  messages     Message[] @relation("TaskToMessage")
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  taskId    String
+  userId    String
+  message   String
+  timestamp DateTime @default(now())
+  task      Task     @relation("TaskToMessage", fields: [taskId], references: [id])
 }
