@@ -32,49 +32,52 @@ const io = socketIo(server, {
 io.on("connection", (socket) => {
   console.log("A user connected");
 
-  // Handle user disconnect
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
-  });
-
-  // Fetch messages for a specific task
+  // Fetch all messages for a task
   socket.on("getmessages", async (taskId) => {
     try {
       const messages = await prisma.message.findMany({
         where: { taskId },
-        orderBy: { timestamp: "asc" }, // Sort messages by timestamp
+        orderBy: { timestamp: "asc" }, // Order messages by timestamp
       });
-      socket.emit("messages", messages); // Emit fetched messages to client
+      socket.emit("messages", messages);
     } catch (error) {
       console.error("Error fetching messages:", error);
-      socket.emit("error", "Failed to fetch messages");
+      socket.emit("error", "Failed to fetch messages.");
     }
   });
 
-  // Create a new message for a specific task
   socket.on("createmessage", async (data) => {
     const { taskId, userId, content } = data;
+
     try {
+      const taskExists = await prisma.task.findUnique({ where: { id: taskId } });
+      if (!taskExists) {
+        socket.emit("error", `Task with ID ${taskId} does not exist.`);
+        return;
+      }
+
       const newMessage = await prisma.message.create({
-        data: {
-          taskId,
-          userId,
-          message: content,
-        },
+        data: { taskId, userId, message: content },
       });
-      io.to(taskId).emit("messageCreated", newMessage); // Emit message to all clients in the task room
+
+      io.to(taskId).emit("messageCreated", newMessage);
+      console.log("Message created successfully:", newMessage);
     } catch (error) {
       console.error("Error creating message:", error);
-      socket.emit("error", "Failed to create message");
+      socket.emit("error", "Failed to create message.");
     }
   });
 
-  // Join a task room
   socket.on("joinTask", (taskId) => {
     console.log(`User joined task room: ${taskId}`);
     socket.join(taskId);
   });
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected");
+  });
 });
+
 
 // Routes
 app.use("/api/auth", authRoutes);
