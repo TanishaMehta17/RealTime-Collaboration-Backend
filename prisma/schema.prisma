@@ -50,6 +50,7 @@ model Message {
   taskId    String
   userId    String
   message   String
+  username  String
   timestamp DateTime @default(now())
   task      Task     @relation("TaskToMessage", fields: [taskId], references: [id])
 }
