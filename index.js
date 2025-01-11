@@ -47,7 +47,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("createmessage", async (data) => {
-    const { taskId, userId, content } = data;
+    const { taskId, userId, content, username, timestamp } = data;
 
     try {
       const taskExists = await prisma.task.findUnique({ where: { id: taskId } });
@@ -57,10 +57,14 @@ io.on("connection", (socket) => {
       }
 
       const newMessage = await prisma.message.create({
-        data: { taskId, userId, message: content },
+        data: { taskId, userId, message: content, username, timestamp:new Date(timestamp) },
       });
 
-      io.to(taskId).emit("messageCreated", newMessage);
+     // io.to(taskId).emit("messageCreated", newMessage);
+     io.to(taskId).emit("messageCreated", {
+      ...newMessage,
+      timestamp: newMessage.timestamp.toISOString(), // Send ISO timestamp
+    });
       console.log("Message created successfully:", newMessage);
     } catch (error) {
       console.error("Error creating message:", error);
