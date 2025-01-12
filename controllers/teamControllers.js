@@ -30,7 +30,7 @@ const createTeam = async (req, res) => {
       .json({ isSuccess: true, message: "Team created successfully",
       id: newTeam.id,
       name: newTeam.name,
-      manager: newTeam.manager,
+      managerId: newTeam.manager,
       password: newTeam.password,
       members: newTeam.members
        });
@@ -86,7 +86,7 @@ const joinTeam = async (req, res) => {
       .json({ isSuccess: true, message: "Team joined successfully",
       id: existingTeam.id,
       name: existingTeam.name,
-      manager: existingTeam.manager,
+      managerId: existingTeam.manager,
       password: existingTeam.password,
       members: updatedMembers
 

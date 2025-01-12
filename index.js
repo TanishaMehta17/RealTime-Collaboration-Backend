@@ -60,11 +60,7 @@ io.on("connection", (socket) => {
         data: { taskId, userId, message: content, username, timestamp:new Date(timestamp) },
       });
 
-     // io.to(taskId).emit("messageCreated", newMessage);
-     io.to(taskId).emit("messageCreated", {
-      ...newMessage,
-      timestamp: newMessage.timestamp.toISOString(), // Send ISO timestamp
-    });
+      io.to(taskId).emit("messageCreated", newMessage);
       console.log("Message created successfully:", newMessage);
     } catch (error) {
       console.error("Error creating message:", error);
@@ -72,9 +68,82 @@ io.on("connection", (socket) => {
     }
   });
 
+  // Fetch all  tasks
+  socket.on("getTask", async (teamId) => {
+    try {
+      const tasks = await prisma.task.findMany({
+        where: { teamId },
+      });
+      socket.emit("tasks", tasks);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      socket.emit("error", "Failed to fetch tasks.");
+    }
+  });
+
+  //create Task
+  socket.on("createTask", async (data) => {
+    const { teamId, title, description, description1, type,status,membersName, date } = data;
+
+    try {
+      const teamExists = await prisma.task.findUnique({ where: { teamId: teamId } });
+      if (!teamExists) {
+        socket.emit("error", `Team with ID ${teamId} does not exist.`);
+        return;
+      }
+
+      const newTask = await prisma.task.create({
+        data: {  title, description, description1, type, status, membersName, teamId,date},
+      });
+
+      io.to(teamId).emit("taskCreated", newTask);
+      console.log("Task created successfully:", newTask);
+    } catch (error) {
+      console.error("Error creating task:", error);
+      socket.emit("error", "Failed to create task.");
+    }
+  });
+
+
+
+// Update task status using Socket.IO
+socket.on("updateStatus", async (data) => {
+  const { taskId, newStatus } = data;
+
+  try {
+    // Validate input
+    if (!taskId || !newStatus) {
+      socket.emit("error", { error: "Task ID and new status are required." });
+      return;
+    }
+
+    // Update the task's status in the database
+    const updatedTask = await prisma.task.update({
+      where: { id: taskId },
+      data: { status: newStatus },
+    });
+
+    // Emit the updated task to all clients
+    io.emit("taskUpdated", updatedTask);
+
+    console.log("Task status updated successfully:", updatedTask);
+  } catch (error) {
+    console.error("Error updating task status:", error);
+    socket.emit("error", { error: "Failed to update task status." });
+  }
+});
+
+
+
+
+
   socket.on("joinTask", (taskId) => {
     console.log(`User joined task room: ${taskId}`);
     socket.join(taskId);
+  });
+  socket.on("joinTeam", (teamId) => {
+    console.log(`User joined task room: ${teamId}`);
+    socket.join(teamId);
   });
 
   socket.on("disconnect", () => {
