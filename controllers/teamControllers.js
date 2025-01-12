@@ -30,7 +30,7 @@ const createTeam = async (req, res) => {
       .json({ isSuccess: true, message: "Team created successfully",
       id: newTeam.id,
       name: newTeam.name,
-      manager: newTeam.manager,
+      managerId: newTeam.manager,
       password: newTeam.password,
       members: newTeam.members
        });
