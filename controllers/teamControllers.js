@@ -86,7 +86,7 @@ const joinTeam = async (req, res) => {
       .json({ isSuccess: true, message: "Team joined successfully",
       id: existingTeam.id,
       name: existingTeam.name,
-      manager: existingTeam.manager,
+      managerId: existingTeam.manager,
       password: existingTeam.password,
       members: updatedMembers
 

@@ -105,6 +105,38 @@ io.on("connection", (socket) => {
   });
 
 
+
+// Update task status using Socket.IO
+socket.on("updateStatus", async (data) => {
+  const { taskId, newStatus } = data;
+
+  try {
+    // Validate input
+    if (!taskId || !newStatus) {
+      socket.emit("error", { error: "Task ID and new status are required." });
+      return;
+    }
+
+    // Update the task's status in the database
+    const updatedTask = await prisma.task.update({
+      where: { id: taskId },
+      data: { status: newStatus },
+    });
+
+    // Emit the updated task to all clients
+    io.emit("taskUpdated", updatedTask);
+
+    console.log("Task status updated successfully:", updatedTask);
+  } catch (error) {
+    console.error("Error updating task status:", error);
+    socket.emit("error", { error: "Failed to update task status." });
+  }
+});
+
+
+
+
+
   socket.on("joinTask", (taskId) => {
     console.log(`User joined task room: ${taskId}`);
     socket.join(taskId);
