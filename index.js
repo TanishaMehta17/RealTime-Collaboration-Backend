@@ -124,7 +124,7 @@ socket.on("updateStatus", async (data) => {
     });
 
     // Emit the updated task to all clients
-    io.emit("taskUpdated", updatedTask);
+    io.emit("taskStatusUpdated", updatedTask);
 
     console.log("Task status updated successfully:", updatedTask);
   } catch (error) {
@@ -134,6 +134,39 @@ socket.on("updateStatus", async (data) => {
 });
 
 
+//Update task
+socket.on("updateTask", async (data) => {
+  const { taskId, title, description,description1,type,membersName,date, status } = data;
+
+  try {
+    // Validate input
+    if (!taskId ) {
+      socket.emit("error", { error: "Task ID and new status are required." });
+      return;
+    }
+
+    // Update the task's status in the database
+    const updatedTask = await prisma.task.update({
+      where: { id: taskId },
+      data: { status: status,
+      title:title,
+      description:description,
+      description1:description1,
+      type:type,
+      membersName:membersName,
+      date:date
+       },
+    });
+
+    // Emit the updated task to all clients
+    io.emit("taskUpdated", updatedTask);
+
+    console.log("Task  updated successfully:", updatedTask);
+  } catch (error) {
+    console.error("Error updating task :", error);
+    socket.emit("error", { error: "Failed to update task ." });
+  }
+});
 
 
 
@@ -145,7 +178,15 @@ socket.on("updateStatus", async (data) => {
     console.log(`User joined task room: ${teamId}`);
     socket.join(teamId);
   });
-
+  socket.on('leaveTeam', (teamId, userId) => {
+    const userid = userId; // or however you store user info
+    // Remove the user from the team-related room
+    socket.leave(teamId);
+  
+    // Optionally, you can broadcast this event to other team members if needed
+    socket.to(teamId).emit('userLeft', { userid: userId });
+  });
+  
   socket.on("disconnect", () => {
     console.log("A user disconnected");
   });
