@@ -27,7 +27,7 @@ model Team {
   name     String   @unique
   password String
   manager  String
-  members  String[] @unique
+  members  String[] 
   tasks    Task[]  @relation("TaskToTeam")
 }
 

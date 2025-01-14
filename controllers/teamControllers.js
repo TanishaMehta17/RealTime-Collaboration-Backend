@@ -68,7 +68,7 @@ const joinTeam = async (req, res) => {
     console.log(decoded);
     const userId = decoded.userId;
     console.log(userId);
-
+    console.log(existingTeam.members);
     // Ensure userId is unique in members
     const updatedMembers = ensureUniqueMembers([...existingTeam.members, userId]);
 

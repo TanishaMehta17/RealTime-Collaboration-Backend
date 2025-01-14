@@ -86,7 +86,7 @@ io.on("connection", (socket) => {
     const { teamId, title, description, description1, type,status,membersName, date } = data;
 
     try {
-      const teamExists = await prisma.task.findUnique({ where: { teamId: teamId } });
+      const teamExists = await prisma.team.findUnique({ where: { id: teamId } });
       if (!teamExists) {
         socket.emit("error", `Team with ID ${teamId} does not exist.`);
         return;
