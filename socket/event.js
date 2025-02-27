@@ -182,10 +182,10 @@ const setupSocketEvents = (io) => {
         redisPublisher.publish(`team:${teamId}`, JSON.stringify(newTask));
 
         // // Publish to Kafka
-        await producer.send({
-          topic: "task-events",
-          messages: [{ key: String(task.id), value: JSON.stringify(task) }],
-        });
+        // await producer.send({
+        //   topic: "task-events",
+        //   messages: [{ key: String(task.id), value: JSON.stringify(task) }],
+        // });
 
         console.log("Task created and published to Redis:", newTask);
       } catch (error) {
@@ -214,12 +214,12 @@ const setupSocketEvents = (io) => {
 
         io.emit("taskStatusUpdated", updatedTask);
         // Publish to Kafka
-        await producer.send({
-          topic: "task-events",
-          messages: [
-            { key: String(taskId), value: JSON.stringify(updatedTask) },
-          ],
-        });
+        // await producer.send({
+        //   topic: "task-events",
+        //   messages: [
+        //     { key: String(taskId), value: JSON.stringify(updatedTask) },
+        //   ],
+        // });
         console.log("Task status updated successfully:", updatedTask);
       } catch (error) {
         console.error("Error updating task status:", error);
@@ -261,12 +261,12 @@ const setupSocketEvents = (io) => {
 
         io.emit("taskUpdated", updatedTask);
         // Publish to Kafka
-        await producer.send({
-          topic: "task-events",
-          messages: [
-            { key: String(taskId), value: JSON.stringify(updatedTask) },
-          ],
-        });
+        // await producer.send({
+        //   topic: "task-events",
+        //   messages: [
+        //     { key: String(taskId), value: JSON.stringify(updatedTask) },
+        //   ],
+        // });
         console.log("Task updated successfully:", updatedTask);
       } catch (error) {
         console.error("Error updating task:", error);
@@ -290,7 +290,8 @@ const setupSocketEvents = (io) => {
     if (type === "task") {
       io.to(id).emit("messageCreated", parsedMessage); // Emit task messages to the task room
       console.log(`Message broadcasted to task room ${id}:`, parsedMessage);
-    } else if (type === "team") {
+    } 
+    else if (type === "team") {
       io.to(id).emit("taskCreated", parsedMessage); // Emit new tasks to the team room
       console.log(`Task broadcasted to team room ${id}:`, parsedMessage);
     }

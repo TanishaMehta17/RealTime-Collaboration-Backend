@@ -52,7 +52,8 @@ const { Kafka } = require("kafkajs");
 
 const kafka = new Kafka({
   clientId: "task-manager",
-  brokers: ["localhost:9092"], // Use local Kafka broker
+ // brokers: ["localhost:9092"], // Use local Kafka broker
+ brokers: ["kafka:9092"],
 });
 
 const producer = kafka.producer();

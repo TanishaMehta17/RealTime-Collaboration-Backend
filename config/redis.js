@@ -33,15 +33,23 @@
 // module.exports = { redisPublisher, redisSubscriber };
 const Redis = require("ioredis");
 
+// const redisPublisher = new Redis({
+//   host: "localhost",
+//   port: 6379,
+// });
 const redisPublisher = new Redis({
-  host: "localhost",
+  host: "redis",
+  port: 6379,
+});
+const redisSubscriber = new Redis({
+  host: "redis",
   port: 6379,
 });
 
-const redisSubscriber = new Redis({
-  host: "localhost",
-  port: 6379,
-});
+// const redisSubscriber = new Redis({
+//   host: "localhost",
+//   port: 6379,
+// });
 
 redisSubscriber.on("connect", () => console.log("Redis subscriber connected"));
 redisPublisher.on("connect", () => console.log("Redis publisher connected"));
